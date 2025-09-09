@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# لو فيه صفحات مش عايزها تتفهرس زي API
+Disallow: /api/
+Disallow: /dashboard/
+
+Sitemap: {{ SITE_URL }}/sitemap.xml

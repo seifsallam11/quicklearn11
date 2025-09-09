@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Title -->
+  <title>AI Lesson Summarizer - Create Visual Study Notes Instantly | QuickLearn</title>
+  
+  <!-- Basic SEO -->
+  <meta name="description" content="Transform complex lessons into simple visual summaries with AI. QuickLearn helps students and teachers create colorful, memorable study notes instantly. Boost learning efficiency by 65% with our smart AI tool.">
+  <meta name="keywords" content="AI lesson summarizer, visual study notes, smart learning tool, education AI, study helper, quick notes generator, learning assistant">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Canonical -->
+  <link rel="canonical" href="{{ SITE_URL }}/">
+  
+  <!-- Preconnect for Google Fonts (improves font load) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Fonts (Roboto Slab for English, Beiruti for Arabic if needed) -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Beiruti&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  
+  <!-- Open Graph for Social Media -->
+  <meta property="og:title" content="AI Lesson Summarizer – Smart Visual Quick Summaries">
+  <meta property="og:description" content="Transform complex lessons into simple, colorful, and visual summaries with AI for faster and smarter learning.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="QuickLearn">
+  <meta property="og:url" content="{{ SITE_URL }}/" />
+  <meta property="og:image" content="{{ SITE_URL }}/static/images/preview-image.png" />
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "QuickLearn",
+  "url": "{{ SITE_URL }}/",
+  "description": "AI-powered tool that turns lessons into visual summaries for faster and smarter studying.",
+  "applicationCategory": "Education",
+  "operatingSystem": "Web Browser",
+  "creator": {
+    "@type": "Organization",
+    "name": "QuickLearn"
+  }
+}
+</script>
+  
+  
+  <!-- Favicon -->
+  <link rel="icon" href="{{ SITE_URL }}/static/images/favicon.png" type="image/png">
+  <style>
+    #charCount {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #555;
+    }
+    /* small accessibility helper */
+    .visually-hidden { position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px); white-space: nowrap; }
+  </style>
+
+  <!-- Structured data (Schema.org) - update url after hosting -->
+  </script>
+</head>
+<body>
+  <div class="container">
+
+    <!-- HEADER: H1 inside header (good for SEO & accessibility) -->
+    <header role="banner" class="site-header">
+      <div class="header-inner">
+        <!-- You can replace this H1 with an image logo if you prefer -->
+        <h1>Learn Smarter with AI-Powered Visual Lesson Summaries</h1>
+        <p class="lead">QuickLearn transforms lessons into clean visual blocks with icons and colors — study faster, retain more.</p>
+      </div>
+    </header>
+
+    <main role="main">
+
+      <!-- INPUT SECTION -->
+      <section id="input-section" aria-labelledby="input-heading">
+        <h2 id="input-heading">Enter Your Lesson</h2>
+
+        <label for="lessonInput" class="visually-hidden">Paste lesson text (max 16,000 characters)</label>
+        <textarea id="lessonInput"
+                  name="lessonInput"
+                  placeholder="Paste your lesson here..."
+                  rows="10"
+                  maxlength="16000"
+                  oninput="checkLength()"
+                  aria-describedby="charCount"
+                  aria-required="true"></textarea>
+
+        <div id="charCount" aria-live="polite">0 / 16000 characters</div>
+
+        <div class="buttons-container" role="toolbar" aria-label="Actions">
+          <!-- keep IDs for your existing script.js to hook into -->
+          <button id="generateBtn" type="button">Generate Summary
+          <span class="loader" id="generateLoader"></span>
+          </button>
+          <button id="openTabBtn" type="button" onclick="openInNewTab()" style="display:none;">Show in new tab</button>
+        </div>
+      </section>
+
+      <!-- RESULT SECTION -->
+      <section id="result-section" aria-labelledby="result-heading">
+        <h2 id="result-heading">Generated Visual Summary</h2>
+
+        <!-- iframe for displaying returned HTML. 'loading=lazy' to help performance -->
+        <!-- Note: avoid sandbox here if your script needs same-origin access; you can add sandbox later if required -->
+        <div class="result-wrap">
+          <iframe id="resultFrame" title="Lesson Summary Result" loading="lazy"></iframe>
+        </div>
+
+        <!-- accessibility note / fallback -->
+        <noscript>
+          <p>Please enable JavaScript to generate and view summaries.</p>
+        </noscript>
+      </section>
+
+      <!-- ABOUT / FEATURES (good for SEO & user trust) -->
+      <section id="about-section" aria-labelledby="about-heading">
+        <h2 id="about-heading">Why QuickLearn?</h2>
+        <ul>
+          <li><strong>Visual-first:</strong> summaries use icons and color blocks for easier memorization.</li>
+          <li><strong>Fast:</strong> generate a summary in seconds.</li>
+          <li><strong>Study-focused:</strong> designed for students and educators.</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer role="contentinfo">
+      <p>&copy; <span id="year"></span> QuickLearn. All rights reserved.</p>
+      <p style="font-size:10px; color:#888; margin-top:4px;">
+    Powered by Gemini API
+  </p>
+    </footer>
+  </div>
+
+
+  <!-- Lightweight inline JS: character counter only (keeps behavior intact, non-invasive) -->
+  <script>
+    // keep function name same as your code to avoid conflicts
+    const maxChars = 16000; // approx 4000 tokens * 4 chars/token
+    const textarea = document.getElementById("lessonInput");
+    const charCount = document.getElementById("charCount");
+    // update footer year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    function checkLength() {
+      const currentLength = textarea.value.length;
+      charCount.textContent = `${currentLength} / ${maxChars} characters`;
+
+      if (currentLength > maxChars) {
+        textarea.value = textarea.value.substring(0, maxChars);
+        // gentle in-page warning instead of alert()
+        charCount.textContent = `${maxChars} / ${maxChars} characters — maximum reached`;
+      }
+    }
+
+    // NOTE: I did NOT implement openInNewTab or the generate workflow here,
+    // because your existing script.js already handles API calls and opening the result.
+    // This file only includes the character counter helper (non-destructive).
+  </script>
+
+  <!-- External script (Flask url_for kept intact). This should contain your generate & openInNewTab logic. -->
+  <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</body>
+</html>
