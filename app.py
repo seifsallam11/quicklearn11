@@ -2,31 +2,28 @@
 
 from flask import Flask, render_template, request, jsonify
 import os
-from dotenv import load_dotenv
 import google.generativeai as genai
-import re  # تأكد من استيراد مكتبة re للتحقق من صحة المدخلات
+import re
 
-# --- تحميل متغيرات البيئة ---
-basedir = os.path.abspath(os.path.dirname(__file__))
-dotenv_path = os.path.join(basedir, '.env')
-load_dotenv(dotenv_path=dotenv_path)
+# -----------------------------
+# تحميل متغيرات البيئة مباشرة من إعدادات PythonAnywhere
+# -----------------------------
 SITE_URL = os.getenv("SITE_URL", "/")
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
-# Inject SITE_URL into all templates
 @app.context_processor
 def inject_site_url():
     return dict(SITE_URL=SITE_URL)
 
 # -----------------------------
-# إعداد Gemini API باستخدام المكتبة الرسمية
+# إعداد Gemini API
 # -----------------------------
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
-    raise ValueError("No GEMINI_API_KEY found. Make sure the .env file exists and is correct.")
+    # هذا الخطأ سيظهر إذا لم تقم بإعداد المفتاح في صفحة Web
+    raise ValueError("No GEMINI_API_KEY found. Make sure it's set in the web app settings.")
 
-# Configure Gemini API key
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel("models/gemini-2.5-pro")
 
@@ -113,7 +110,7 @@ Words should be clearly separated.
 Creativity is allowed, especially in Phase 3, while retaining the core content and relying on logical icons for clarity and understanding.
 
  so important:
- 	Return HTML snippet only (no <html>, <head>, <body> tags). Ensure each line is a <p> inside a <div> block.
+    Return HTML snippet only (no <html>, <head>, <body> tags). Ensure each line is a <p> inside a <div> block.
 Use consistent colors for repeated words.
 """
 
